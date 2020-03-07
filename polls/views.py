@@ -3,10 +3,34 @@ from django.template import loader
 from .models import Choice, Question
 from django.shortcuts import get_object_or_404, render
 from django.http import Http404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 from django.utils import timezone
+from .forms import FriendlyForm, QuestionCreateForm
+from django.views.generic.edit import CreateView
 
+
+def form_demo(request):
+    form = FriendlyForm()
+    
+    context = {'form': form}
+    
+    return render(request, 'polls/form_demo.html', context)
+    
+# books/views.py
+class QuestionCreateView(CreateView):
+    
+    def get(self, request, *args, **kwargs):
+        context = {'form': QuestionCreateForm()}
+        return render(request, 'polls/new.html', context)
+    
+    def post(self, request, *args, **kwargs):
+        form = QuestionCreateForm(request.POST)
+        if form.is_valid():
+            question = form.save()
+            return HttpResponseRedirect(reverse_lazy('polls:detail', args=[question.id]))
+        return render(request, 'polls/new.html', {'form': form})
+    
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
     context = {'latest_question_list': latest_question_list}
