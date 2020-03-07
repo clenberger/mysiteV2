@@ -120,3 +120,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    "/Users/christianlenberger/Documents/dev/term-3-work/BEW-1.2/mysite/polls/static/polls",
+)
